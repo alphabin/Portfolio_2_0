@@ -1,0 +1,17 @@
+.parallax-container {
+    height: 400px;
+  }
+
+  .fixed-action-btn {
+    position: fixed;
+    top: .5%;
+      right: 5%;
+      bottom: unset !important;
+      padding-top: 2px;
+      margin-bottom: 0;
+      z-index: 997;
+    }
+
+    nav{
+      height: 80px !important;
+    }
