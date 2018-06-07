@@ -129,3 +129,11 @@
   #formHeader,  #formHeaderMain{
     background: #2296f4;
   }
+
+  input, textarea {
+    width: 80%;
+  }
+
+  li > a,label{
+    color:#03A9F4 !important;
+   }
