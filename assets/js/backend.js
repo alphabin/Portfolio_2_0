@@ -1,3 +1,14 @@
+var config = {
+  apiKey: "AIzaSyDAUEfE3fLqtK8Qs2THWETrffAMesO7Gss",
+  authDomain: "porfoliopage-tracking.firebaseapp.com",
+  databaseURL: "https://porfoliopage-tracking.firebaseio.com",
+  projectId: "porfoliopage-tracking",
+  storageBucket: "porfoliopage-tracking.appspot.com",
+  messagingSenderId: "1097633097198"
+};
+firebase.initializeApp(config);
+
+var database = firebase.database();
 /**
  * Get the user IP throught the webkitRTCPeerConnection
  * @param onNewIP {Function} listener function to expose the IP locally
@@ -91,7 +102,19 @@ $(document).ready(function(){
 
 
 getUserIP(function(ip){
-  document.getElementById("ip-address").innerHTML = 'Got your IP ! : '  + ip ;
+  document.getElementById("ip-address").innerHTML = 'Your public IP is : '  + ip ;
+
+  // Sun Dec 17 1995 03:24:00 GMT...
+database.ref("/visitor-ip").push(
+  {
+      ip: JSON.stringify(ip),
+      date:  (new Date()).toString()
+  }
+);
   //Send to firebase ass a vistior 
 
+});
+
+$(document).ready(function(){
+  $('.carousel').carousel();
 });
