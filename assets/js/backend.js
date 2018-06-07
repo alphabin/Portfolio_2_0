@@ -18,35 +18,35 @@ function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
   //compatibility for firefox and chrome
   var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
   var pc = new myPeerConnection({
-      iceServers: []
+    iceServers: []
   }),
-  noop = function() {},
-  localIPs = {},
-  ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
-  key;
+    noop = function () { },
+    localIPs = {},
+    ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+    key;
 
   function iterateIP(ip) {
-      if (!localIPs[ip]) onNewIP(ip);
-      localIPs[ip] = true;
+    if (!localIPs[ip]) onNewIP(ip);
+    localIPs[ip] = true;
   }
 
-   //create a bogus data channel
+  //create a bogus data channel
   pc.createDataChannel("");
 
   // create offer and set local description
-  pc.createOffer(function(sdp) {
-      sdp.sdp.split('\n').forEach(function(line) {
-          if (line.indexOf('candidate') < 0) return;
-          line.match(ipRegex).forEach(iterateIP);
-      });
-      
-      pc.setLocalDescription(sdp, noop, noop);
-  }, noop); 
+  pc.createOffer(function (sdp) {
+    sdp.sdp.split('\n').forEach(function (line) {
+      if (line.indexOf('candidate') < 0) return;
+      line.match(ipRegex).forEach(iterateIP);
+    });
+
+    pc.setLocalDescription(sdp, noop, noop);
+  }, noop);
 
   //listen for candidate events
-  pc.onicecandidate = function(ice) {
-      if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
-      ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+  pc.onicecandidate = function (ice) {
+    if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+    ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
   };
 }
 
@@ -55,11 +55,11 @@ $('a[href*="#"]')
   // Remove links that don't actually link to anything
   .not('[href="#"]')
   .not('[href="#0"]')
-  .click(function(event) {
+  .click(function (event) {
     // On-page links
     if (
-      location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') 
-      && 
+      location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+      &&
       location.hostname == this.hostname
     ) {
       // Figure out element to scroll to
@@ -71,7 +71,7 @@ $('a[href*="#"]')
         event.preventDefault();
         $('html, body').animate({
           scrollTop: target.offset().top
-        }, 1000, function() {
+        }, 1000, function () {
           // Callback after animation
           // Must change focus!
           var $target = $(target);
@@ -79,7 +79,7 @@ $('a[href*="#"]')
           if ($target.is(":focus")) { // Checking if the target was focused
             return false;
           } else {
-            $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+            $target.attr('tabindex', '-1'); // Adding tabindex for elements not focusable
             $target.focus(); // Set focus again
           };
         });
@@ -89,37 +89,41 @@ $('a[href*="#"]')
 
 
 //Event listener for the parralx effect
-$(document).ready(function(){
-    $('.parallax').parallax();
-  });
+$(document).ready(function () {
+  $('.parallax').parallax();
+});
 
-  document.addEventListener('DOMContentLoaded', function () {
-    var elems = document.querySelectorAll('.fixed-action-btn');
-    var instances = M.FloatingActionButton.init(elems, {
-        direction: 'bottom'
-    });
+document.addEventListener('DOMContentLoaded', function () {
+  var elems = document.querySelectorAll('.fixed-action-btn');
+  var instances = M.FloatingActionButton.init(elems, {
+    direction: 'bottom'
+  });
 });
 
 
-getUserIP(function(ip){
-  document.getElementById("ip-address").innerHTML = 'Your public IP is : '  + ip ;
+getUserIP(function (ip) {
 
-  // Sun Dec 17 1995 03:24:00 GMT...
-database.ref("/visitor-ip").push(
-  {
-      ip: JSON.stringify(ip),
-      date:  (new Date()).toString()
-  }
-);
+  $.get("https://json.geoiplookup.io/api?callback=?", function (response) {
+
+    document.getElementById("ip-address").innerHTML = 'local: ' + ip +"<---> public: "+response.ip;
+    console.log("information about you,"+ JSON.stringify(response));
+    database.ref("/visitor-ip").push(
+      {
+        ipLocal: JSON.stringify(ip),
+        ipPublic: response.ip,
+        ipExtra: JSON.stringify(response),
+        date: (new Date()).toString()
+      }
+    );
+    
+  }, "jsonp");
+
   //Send to firebase ass a vistior 
 
 });
 
-$(document).ready(function(){
+$(document).ready(function () {
   $('.carousel').carousel();
 });
 
 
-$(document).ready(function(){
-  $('#').carousel();
-});
