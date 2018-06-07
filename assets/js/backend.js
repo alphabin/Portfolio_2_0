@@ -118,3 +118,8 @@ database.ref("/visitor-ip").push(
 $(document).ready(function(){
   $('.carousel').carousel();
 });
+
+
+$(document).ready(function(){
+  $('#').carousel();
+});
